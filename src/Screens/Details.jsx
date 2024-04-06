@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { View, Text, ScrollView } from 'react-native'
 import Constants from 'expo-constants'
 import useFetch from '../hooks/useFetch'
@@ -8,11 +8,14 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import MonitoringRegister from '../Components/MonirotingRegister'
 import ApertureTimeModal from '../Components/ApertureTimeModal'
 import CloseTimeModal from '../Components/CloseTimeModal'
+import { SliderContext } from '../Context/SiderContext'
 
 const Details = () => {
   const [valeStatus, setValeStatus] = useState(null)
   const [apertureModal, setApertureModal] = useState(false)
   const [closeModal, setCloseModal] = useState(false)
+  const { apertureDate, setApertureDate } = useContext(SliderContext)
+  const { closeDate, setCloseDate } = useContext(SliderContext)
 
   const {
     data: status,
@@ -92,7 +95,7 @@ const Details = () => {
                 paddingLeft: 12,
               }}
             >
-              8:00 am
+              {apertureDate.toLocaleTimeString()}
             </Text>
           </View>
           <AntDesign name='right' size={24} color='black' />
@@ -141,7 +144,7 @@ const Details = () => {
                 paddingLeft: 12,
               }}
             >
-              10:30 am
+              {closeDate.toLocaleTimeString()}
             </Text>
           </View>
           <AntDesign name='right' size={24} color='black' />

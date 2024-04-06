@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import {
   Modal,
   View,
@@ -13,11 +13,13 @@ import {
 } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { FontAwesome6 } from '@expo/vector-icons'
+import * as Notifications from 'expo-notifications'
+import { SliderContext } from '../Context/SiderContext'
 
 function ApertureTimeModal({ openModal, setOpenModal }) {
-  const [date, setDate] = useState(new Date())
+  const { apertureDate, setApertureDate } = useContext(SliderContext)
   const [show, setShow] = useState(false)
-  const [isEnabled, setIsEnabled] = useState(false)
+  const [withAlert, setWithAlert] = useState(false)
 
   const pan = useRef(new Animated.ValueXY()).current
 
@@ -41,12 +43,36 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
   ).current
 
   const toggleSwitch = () => {
-    setIsEnabled((previousState) => !previousState)
+    setWithAlert((previousState) => !previousState)
   }
 
   const onChange = (e, selectedDate) => {
-    setDate(selectedDate)
+    setApertureDate(selectedDate)
     setShow(false)
+  }
+
+  const updateApertureTime = () => {
+    console.log(apertureDate)
+    if (withAlert) {
+      scheduleRiskNotification(apertureDate)
+    }
+  }
+
+  const scheduleRiskNotification = async (apertureTime) => {
+    const trigger = new Date(apertureTime)
+    try {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: 'The valve is open!',
+          body: 'The risk is started!',
+          sound: 'default',
+        },
+        trigger,
+      })
+      console.log('Notification was schedule')
+    } catch (e) {
+      alert('The notification failed, because the hour is not valid.')
+    }
   }
 
   return (
@@ -92,7 +118,7 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
                 </Text>
               </View>
               <DateTimePicker
-                value={date}
+                value={apertureDate}
                 mode={'time'}
                 is24Hour={true}
                 onChange={onChange}
@@ -112,7 +138,7 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
               <Switch
                 ios_backgroundColor='#3e3e3e'
                 onValueChange={toggleSwitch}
-                value={isEnabled}
+                value={withAlert}
               />
             </View>
             <View
@@ -134,10 +160,16 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
                   color: 'rgba(97, 188, 132, 1)',
                 }}
               >
-                {date.toLocaleTimeString()}
+                {apertureDate.toLocaleTimeString()}
               </Text>
             </View>
-            <Pressable style={styles.update}>
+            <Pressable
+              onPress={() => {
+                updateApertureTime()
+                setOpenModal(false)
+              }}
+              style={styles.update}
+            >
               <Text style={styles.updateText}>Set Hour</Text>
             </Pressable>
             <Pressable
