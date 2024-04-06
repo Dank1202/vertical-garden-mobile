@@ -13,11 +13,12 @@ import {
 } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { FontAwesome6 } from '@expo/vector-icons'
+import * as Notifications from 'expo-notifications'
 
 function ApertureTimeModal({ openModal, setOpenModal }) {
   const [date, setDate] = useState(new Date())
   const [show, setShow] = useState(false)
-  const [isEnabled, setIsEnabled] = useState(false)
+  const [withAlert, setWithAlert] = useState(false)
 
   const pan = useRef(new Animated.ValueXY()).current
 
@@ -41,12 +42,36 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
   ).current
 
   const toggleSwitch = () => {
-    setIsEnabled((previousState) => !previousState)
+    setWithAlert((previousState) => !previousState)
   }
 
   const onChange = (e, selectedDate) => {
     setDate(selectedDate)
     setShow(false)
+  }
+
+  const updateApertureTime = () => {
+    console.log(date)
+    if (withAlert) {
+      scheduleRiskNotification(date)
+    }
+  }
+
+  const scheduleRiskNotification = async (apertureTime) => {
+    const trigger = new Date(apertureTime)
+    try {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: 'The valve is open!',
+          body: 'The risk is started!',
+          sound: 'default',
+        },
+        trigger,
+      })
+      console.log('Notification was schedule')
+    } catch (e) {
+      alert('The notification failed, because the hour is not valid.')
+    }
   }
 
   return (
@@ -112,7 +137,7 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
               <Switch
                 ios_backgroundColor='#3e3e3e'
                 onValueChange={toggleSwitch}
-                value={isEnabled}
+                value={withAlert}
               />
             </View>
             <View
@@ -137,7 +162,13 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
                 {date.toLocaleTimeString()}
               </Text>
             </View>
-            <Pressable style={styles.update}>
+            <Pressable
+              onPress={() => {
+                updateApertureTime()
+                setOpenModal(false)
+              }}
+              style={styles.update}
+            >
               <Text style={styles.updateText}>Set Hour</Text>
             </Pressable>
             <Pressable
