@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import {
   Modal,
   View,
@@ -14,9 +14,10 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { FontAwesome6 } from '@expo/vector-icons'
 import * as Notifications from 'expo-notifications'
+import { SliderContext } from '../Context/SiderContext'
 
 function ApertureTimeModal({ openModal, setOpenModal }) {
-  const [date, setDate] = useState(new Date())
+  const { apertureDate, setApertureDate } = useContext(SliderContext)
   const [show, setShow] = useState(false)
   const [withAlert, setWithAlert] = useState(false)
 
@@ -46,14 +47,14 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
   }
 
   const onChange = (e, selectedDate) => {
-    setDate(selectedDate)
+    setApertureDate(selectedDate)
     setShow(false)
   }
 
   const updateApertureTime = () => {
-    console.log(date)
+    console.log(apertureDate)
     if (withAlert) {
-      scheduleRiskNotification(date)
+      scheduleRiskNotification(apertureDate)
     }
   }
 
@@ -117,7 +118,7 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
                 </Text>
               </View>
               <DateTimePicker
-                value={date}
+                value={apertureDate}
                 mode={'time'}
                 is24Hour={true}
                 onChange={onChange}
@@ -159,7 +160,7 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
                   color: 'rgba(97, 188, 132, 1)',
                 }}
               >
-                {date.toLocaleTimeString()}
+                {apertureDate.toLocaleTimeString()}
               </Text>
             </View>
             <Pressable

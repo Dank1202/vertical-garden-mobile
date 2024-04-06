@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import {
   Modal,
   View,
@@ -13,11 +13,15 @@ import {
 } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { FontAwesome6 } from '@expo/vector-icons'
+import * as Notifications from 'expo-notifications'
+import { SliderContext } from '../Context/SiderContext'
 
 function CloseTimeModal({ openModal, setOpenModal }) {
-  const [date, setDate] = useState(new Date())
+  const { closeDate, setCloseDate } = useContext(SliderContext)
+  const { apertureDate, setApertureDate } = useContext(SliderContext)
+
   const [show, setShow] = useState(false)
-  const [isEnabled, setIsEnabled] = useState(false)
+  const [withAlert, setWithAlert] = useState(false)
 
   const pan = useRef(new Animated.ValueXY()).current
 
@@ -41,12 +45,41 @@ function CloseTimeModal({ openModal, setOpenModal }) {
   ).current
 
   const toggleSwitch = () => {
-    setIsEnabled((previousState) => !previousState)
+    setWithAlert((previousState) => !previousState)
   }
 
   const onChange = (e, selectedDate) => {
-    setDate(selectedDate)
+    setCloseDate(selectedDate)
     setShow(false)
+  }
+
+  const updateCloseTime = () => {
+    console.log(closeDate)
+    if (withAlert) {
+      scheduleRiskNotification(closeDate)
+    }
+  }
+
+  const scheduleRiskNotification = async (closeTime) => {
+    const trigger = new Date(closeTime)
+    if (apertureDate < closeTime) {
+      try {
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: 'The valve is closed!',
+            body: 'The risk is over!',
+            sound: 'default',
+          },
+          trigger,
+        })
+        console.log('Notification was schedule')
+      } catch (e) {
+        console.error(e)
+        alert('The notification failed, because the hour is not valid.')
+      }
+    } else {
+      alert('Close time can´t be mayor than aperture time')
+    }
   }
 
   return (
@@ -92,7 +125,7 @@ function CloseTimeModal({ openModal, setOpenModal }) {
                 </Text>
               </View>
               <DateTimePicker
-                value={date}
+                value={closeDate}
                 mode={'time'}
                 is24Hour={true}
                 onChange={onChange}
@@ -112,7 +145,7 @@ function CloseTimeModal({ openModal, setOpenModal }) {
               <Switch
                 ios_backgroundColor='#3e3e3e'
                 onValueChange={toggleSwitch}
-                value={isEnabled}
+                value={withAlert}
               />
             </View>
             <View
@@ -132,10 +165,16 @@ function CloseTimeModal({ openModal, setOpenModal }) {
                   color: 'rgba(97, 188, 132, 1)',
                 }}
               >
-                {date.toLocaleTimeString()}
+                {closeDate.toLocaleTimeString()}
               </Text>
             </View>
-            <Pressable style={styles.update}>
+            <Pressable
+              onPress={() => {
+                updateCloseTime()
+                setOpenModal(false)
+              }}
+              style={styles.update}
+            >
               <Text style={styles.updateText}>Set Hour</Text>
             </Pressable>
             <Pressable
