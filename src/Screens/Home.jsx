@@ -35,11 +35,10 @@ const images = [
       'Vegetable beneficial for health due to the presence of citric and malic acid that favors digestive processes.',
     irrigation:
       'Water 3 or 4 times a week in hot weather with a watering can or drip irrigation.',
-    first_crop: '60 to 80 days.',
     additional_care: {
-      light: 'At least 6 hours of direct sunshine per day,',
+      light: '6 hours of direct sunshine per day.',
       temperature: 'Soil temperature between 20-25°C.',
-      other: 'Prune lateral branches and leave 2-3 main branches.',
+      other: 'Prune and leave 2-3 main branches',
     },
     image: 'https://i.postimg.cc/fT5xCDjb/jitomate.jpg',
   },
@@ -49,10 +48,13 @@ const images = [
     description:
       'It is a cereal, an American gramineae plant, characterized by long and massive stems.',
     irrigation: 'Water at least once a week every time the substrate is dry.',
-    first_crop: '100 to 150 days',
-    additional_care:
-      'The main care that has to be carried out is the correct choice of the site, planning of planting and preparation of the soil.',
-    image: 'https://i.postimg.cc/hG44rRsK/maiz.jpg',
+    additional_care: {
+      light: '6 hours of direct sunshine per day.',
+      temperature: 'Soil temperature between 20-25°C.',
+      other: 'Prune and leave 2-3 main branches',
+    },
+    image:
+      'https://i.postimg.cc/hG44rRsK/maiz.jpg',
   },
   {
     name: 'Onion',
@@ -60,33 +62,39 @@ const images = [
     description:
       'It is a horticultural plant of the liliaceae family that is characterized by its low caloric value and high fiber content.',
     irrigation: 'Moderate watering 2 to 4 times a week.',
-    first_crop:
-      'When they have a yellowish color and approximately 50-75% of the foliage has dried the crops are ready for harvest.',
-    additional_care:
-      'Weed control, fertilization every 3-4 weeks and protection against pests and diseases.',
-    image: 'https://i.postimg.cc/PrGt7wy3/cebolla.jpg',
+    additional_care: {
+      light: '6 hours of direct sunshine per day.',
+      temperature: 'Soil temperature between 20-25°C.',
+      other: 'Prune and leave 2-3 main branches',
+    },
+    image:
+      'https://i.postimg.cc/PrGt7wy3/cebolla.jpg',
   },
   {
     name: 'Radish',
     date: 'Raphanus sativus',
-    description:
-      'It is a biennial herbaceous plant belonging to the amaryllidaceous family.',
-    irrigation:
-      'It is only necessary to keep the soil moist for healthy growth.',
-    first_crop: '4 weeks after planting.',
-    additional_care:
-      '6 hours of direct sunlight per day, temperature 18-22°C (64-86°F)',
-    image: 'https://i.postimg.cc/gJCP1CVX/rabano.jpg',
+    description: 'It is a biennial herbaceous plant belonging to the amaryllidaceous family.',
+    irrigation: 'It is only necessary to keep the soil moist for healthy growth.',
+    additional_care: {
+      light: '6 hours of direct sunshine per day.',
+      temperature: 'Soil temperature between 20-25°C.',
+      other: 'Prune and leave 2-3 main branches',
+    },
+    image:
+      'https://i.postimg.cc/gJCP1CVX/rabano.jpg',
   },
   {
     name: 'Watermelon',
     date: 'Citrullus lanatus',
     description: 'Annual plant that belongs to the cucurbitaceae family.',
     irrigation: 'Water 3 times a week, for two or three hours.',
-    first_crop: 'An average of 120 days',
-    additional_care:
-      'Mainly the choice of a good soil, in addition to a good pruning and cleaning afterwards.',
-    image: 'https://i.postimg.cc/qBKr27r8/sandia.jpg',
+    additional_care: {
+      light: '6 hours of direct sunshine per day.',
+      temperature: 'Soil temperature between 20-25°C.',
+      other: 'Prune and leave 2-3 main branches',
+    },
+    image:
+      'https://i.postimg.cc/qBKr27r8/sandia.jpg',
   },
   {
     name: 'Chili puya',
@@ -94,10 +102,13 @@ const images = [
     description:
       'It is a Mexican bell pepper similar to the guajillo, but smaller and hotter.',
     irrigation: 'Drip irrigation every third day for 3 to 5 hours.',
-    first_crop: 'Approximately eight weeks after planting.',
-    additional_care:
-      'This plant is easier to care for as it does not need pruning or fertilizers.',
-    image: 'https://i.postimg.cc/XvhMyRDH/puya.jpg',
+    additional_care: {
+      light: '6 hours of direct sunshine per day.',
+      temperature: 'Soil temperature between 20-25°C.',
+      other: 'Prune and leave 2-3 main branches',
+    },
+    image:
+      'https://i.postimg.cc/XvhMyRDH/puya.jpg',
   },
   {
     name: 'Celery',
@@ -105,9 +116,13 @@ const images = [
     description:
       'It is an annual herbaceous plant, of the apiaceae family, used as an aromatic herb.',
     irrigation: 'Water 2-3 times per week.',
-    first_crop: 'Between week 16 and 18.',
-    additional_care: '4 hours of direct light minimum and a warm temperature',
-    image: 'https://i.postimg.cc/rp7bpSK7/cilantro.jpg',
+    additional_care: {
+      light: '6 hours of direct sunshine per day.',
+      temperature: 'Soil temperature between 20-25°C.',
+      other: 'Prune and leave 2-3 main branches',
+    },
+    image:
+      'https://i.postimg.cc/rp7bpSK7/cilantro.jpg',
   },
   {
     name: 'Strawberry',
@@ -115,10 +130,13 @@ const images = [
     description:
       'It is a perennial plant of the rosaceae family, whose fruit is edible.',
     irrigation: 'Drip irrigation once a week in the mornings.',
-    first_crop: '3 to 6 months after planting.',
-    additional_care:
-      'Water with warm water and prune after harvest to stimulate the growth of new stems.',
-    image: 'https://i.postimg.cc/q7pq53JV/fresa.jpg',
+    additional_care: {
+      light: '6 hours of direct sunshine per day.',
+      temperature: 'Soil temperature between 20-25°C.',
+      other: 'Prune and leave 2-3 main branches',
+    },
+    image:
+      'https://i.postimg.cc/q7pq53JV/fresa.jpg',
   },
   {
     name: 'Habanero pepper',
@@ -126,9 +144,13 @@ const images = [
     description:
       'It is a herbaceous plant or shrub, branched, reaching a size of up to 2.5m high.',
     irrigation: '2 to 3 times per week, keeping the soil moist.',
-    first_crop: 'At 90 days after planting.',
-    additional_care: 'Keep in a warm climate as it is very sensitive to frost.',
-    image: 'https://i.postimg.cc/5jcNqH7r/habanero.jpg',
+    additional_care: {
+      light: '6 hours of direct sunshine per day.',
+      temperature: 'Soil temperature between 20-25°C.',
+      other: 'Prune and leave 2-3 main branches',
+    },
+    image:
+      'https://i.postimg.cc/5jcNqH7r/habanero.jpg',
   },
 ]
 
