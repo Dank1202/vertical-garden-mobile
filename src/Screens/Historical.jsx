@@ -6,6 +6,7 @@ import Constants from 'expo-constants'
 import StackedAreaExample from '../Components/StackedAreaChart'
 import ProgressCircleExample from '../Components/ProgressCircle'
 import PieChartExample from '../Components/PieChart'
+import BarChartComponent from '../Components/BarChartComponent'
 
 class Historical extends React.Component {
   constructor(props) {
@@ -60,6 +61,7 @@ class Historical extends React.Component {
             keys={this.state.keys}
             chartName={this.state.chartNames[0]}
           />
+          <BarChartComponent />
           <StackedAreaExample
             data={this.state.data}
             keys={this.state.keys}
