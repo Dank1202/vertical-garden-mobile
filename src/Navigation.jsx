@@ -150,6 +150,7 @@ function DrawerContent(props) {
             shadowOpacity: 1,
             shadowRadius: 12,
             shadowOffset: -22,
+            height: '100%',
           }}
         >
           <CurtomDrawerItem name={'Home'} component={Home} icon={'house'} />

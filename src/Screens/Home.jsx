@@ -253,6 +253,7 @@ const Home = () => {
           onRefresh={handleRefresh}
           colors={['#9Bd35A', '#689F38']}
           tintColor={'#689F38'}
+          style={{ marginTop: 8 }}
         />
       }
     >
@@ -300,6 +301,7 @@ const Home = () => {
       </View>
 
       {/* FastView component */}
+      {/* REFACTOR IS NECESSARY FOR THIS COMPONENT!!!! */}
       <View style={styles.fastView}>
         <View style={styles.fastViewSubcontainer}>
           <View style={styles.numberContainer}>
@@ -370,15 +372,6 @@ const Home = () => {
 }
 
 const styles = StyleSheet.create({
-  // Vale status
-  valeStatus: {
-    width: '96%',
-    backgroundColor: 'rgba(92, 201, 140, 0.2)',
-    borderRadius: 22,
-    paddingVertical: 18,
-    paddingHorizontal: 18,
-    marginVertical: 8,
-  },
   // Monitoring data
   fastView: {
     display: 'flex',
