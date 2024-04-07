@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import { SliderContext } from '../Context/SiderContext'
 
 import { FontAwesome6 } from '@expo/vector-icons'
+import CareManagement from './CareManagement'
 
 function SliderStackScreen() {
   const navigation = useNavigation()
@@ -68,16 +69,21 @@ function SliderStackScreen() {
           }}>
             {currentSliderItem.irrigation}
           </Text>
-          <Text style={{ 
-            margin: 10,
-          }}>
-            {currentSliderItem.first_crop}
-          </Text>
-          <Text style={{ 
-            margin: 10,
-          }}>
-            {currentSliderItem.additional_care}
-          </Text>
+          <CareManagement 
+            name={'Light'}
+            description={currentSliderItem.additional_care.light}
+            icon={'sun'}
+          />
+          <CareManagement 
+            name={'Temperature'}
+            description={currentSliderItem.additional_care.temperature}
+            icon={'thermometer'}
+          />
+          <CareManagement 
+            name={'Other'}
+            description={currentSliderItem.additional_care.other}
+            icon={'menu'}
+          />
         </View>
       </View>
     </ScrollView>
