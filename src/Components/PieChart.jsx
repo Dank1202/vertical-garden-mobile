@@ -50,7 +50,7 @@ class PieChartExample extends React.PureComponent {
           alignItems: 'left',
           backgroundColor: '#ffff',
           borderRadius: 32,
-          marginVertical: 18,
+          marginTop: 18,
           paddingVertical: 18,
           shadowColor: 'gray',
           shadowOpacity: 0.2,
@@ -110,6 +110,7 @@ class PieChartExample extends React.PureComponent {
           <View style={{ width: 152 }}>
             {keys.map((item, index) => (
               <View
+                key={index}
                 style={{
                   display: 'flex',
                   flexDirection: 'row',

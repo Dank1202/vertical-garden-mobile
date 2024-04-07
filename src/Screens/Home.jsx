@@ -7,9 +7,13 @@ import {
   Animated,
   StyleSheet,
   RefreshControl,
+  Platform,
+  Vibration,
 } from 'react-native'
 import HomeSlider from '../Components/HomeSlider'
 import Slider from '../Components/Slider'
+import * as Notifications from 'expo-notifications'
+import * as Device from 'expo-device'
 import Constants from 'expo-constants'
 
 import { FontAwesome6 } from '@expo/vector-icons'
@@ -41,7 +45,8 @@ const images = [
   {
     name: 'Corn',
     date: 'Zea mays',
-    description: 'It is a cereal, an American gramineae plant, characterized by long and massive stems.',
+    description:
+      'It is a cereal, an American gramineae plant, characterized by long and massive stems.',
     irrigation: 'Water at least once a week every time the substrate is dry.',
     additional_care: {
       light: '6 hours of direct sunshine per day.',
@@ -54,7 +59,8 @@ const images = [
   {
     name: 'Onion',
     date: 'Allium cepa',
-    description: 'It is a horticultural plant of the liliaceae family that is characterized by its low caloric value and high fiber content.',
+    description:
+      'It is a horticultural plant of the liliaceae family that is characterized by its low caloric value and high fiber content.',
     irrigation: 'Moderate watering 2 to 4 times a week.',
     additional_care: {
       light: '6 hours of direct sunshine per day.',
@@ -93,7 +99,8 @@ const images = [
   {
     name: 'Chili puya',
     date: 'Puya chilensis',
-    description: 'It is a Mexican bell pepper similar to the guajillo, but smaller and hotter.',
+    description:
+      'It is a Mexican bell pepper similar to the guajillo, but smaller and hotter.',
     irrigation: 'Drip irrigation every third day for 3 to 5 hours.',
     additional_care: {
       light: '6 hours of direct sunshine per day.',
@@ -106,7 +113,8 @@ const images = [
   {
     name: 'Celery',
     date: 'Coriandrum sativum',
-    description: 'It is an annual herbaceous plant, of the apiaceae family, used as an aromatic herb.',
+    description:
+      'It is an annual herbaceous plant, of the apiaceae family, used as an aromatic herb.',
     irrigation: 'Water 2-3 times per week.',
     additional_care: {
       light: '6 hours of direct sunshine per day.',
@@ -119,7 +127,8 @@ const images = [
   {
     name: 'Strawberry',
     date: 'Fragaria',
-    description: 'It is a perennial plant of the rosaceae family, whose fruit is edible.',
+    description:
+      'It is a perennial plant of the rosaceae family, whose fruit is edible.',
     irrigation: 'Drip irrigation once a week in the mornings.',
     additional_care: {
       light: '6 hours of direct sunshine per day.',
@@ -132,7 +141,8 @@ const images = [
   {
     name: 'Habanero pepper',
     date: 'Capsicum chinense',
-    description: 'It is a herbaceous plant or shrub, branched, reaching a size of up to 2.5m high.',
+    description:
+      'It is a herbaceous plant or shrub, branched, reaching a size of up to 2.5m high.',
     irrigation: '2 to 3 times per week, keeping the soil moist.',
     additional_care: {
       light: '6 hours of direct sunshine per day.',
@@ -144,8 +154,17 @@ const images = [
   },
 ]
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+})
+
 const Home = () => {
   const navigation = useNavigation()
+  const [expoPushToken, setExpoPushToken] = useState('')
 
   const [monitoringData, setMonitoringData] = useState([])
   const [valeStatus, setValeStatus] = useState([])
@@ -192,6 +211,49 @@ const Home = () => {
     }, 2000)
     setLoading(false)
   }
+
+  async function registerForPushNotificationsAsync() {
+    let token
+
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      })
+    }
+
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync()
+      let finalStatus = existingStatus
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync()
+        finalStatus = status
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!')
+        return
+      }
+      // Learn more about projectId:
+      // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
+      token = (
+        await Notifications.getExpoPushTokenAsync({
+          projectId: 'your-project-id',
+        })
+      ).data
+      console.log(token)
+    } else {
+      alert('Must use physical device for Push Notifications')
+    }
+
+    return token
+  }
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) => setExpoPushToken(token))
+  }, [])
 
   useEffect(() => {
     if (

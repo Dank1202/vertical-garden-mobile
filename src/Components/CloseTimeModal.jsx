@@ -16,8 +16,10 @@ import { FontAwesome6 } from '@expo/vector-icons'
 import * as Notifications from 'expo-notifications'
 import { SliderContext } from '../Context/SiderContext'
 
-function ApertureTimeModal({ openModal, setOpenModal }) {
+function CloseTimeModal({ openModal, setOpenModal }) {
+  const { closeDate, setCloseDate } = useContext(SliderContext)
   const { apertureDate, setApertureDate } = useContext(SliderContext)
+
   const [show, setShow] = useState(false)
   const [withAlert, setWithAlert] = useState(false)
 
@@ -47,31 +49,36 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
   }
 
   const onChange = (e, selectedDate) => {
-    setApertureDate(selectedDate)
+    setCloseDate(selectedDate)
     setShow(false)
   }
 
-  const updateApertureTime = () => {
-    console.log(apertureDate)
+  const updateCloseTime = () => {
+    console.log(closeDate)
     if (withAlert) {
-      scheduleRiskNotification(apertureDate)
+      scheduleRiskNotification(closeDate)
     }
   }
 
-  const scheduleRiskNotification = async (apertureTime) => {
-    const trigger = new Date(apertureTime)
-    try {
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: 'The valve is open!',
-          body: 'The risk is started!',
-          sound: 'default',
-        },
-        trigger,
-      })
-      console.log('Notification was schedule')
-    } catch (e) {
-      alert('The notification failed, because the hour is not valid.')
+  const scheduleRiskNotification = async (closeTime) => {
+    const trigger = new Date(closeTime)
+    if (apertureDate < closeTime) {
+      try {
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: 'The valve is closed!',
+            body: 'The risk is over!',
+            sound: 'default',
+          },
+          trigger,
+        })
+        console.log('Notification was schedule')
+      } catch (e) {
+        console.error(e)
+        alert('The notification failed, because the hour is not valid.')
+      }
+    } else {
+      alert('Close time can´t be mayor than aperture time')
     }
   }
 
@@ -91,7 +98,7 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
           {...panResponder.panHandlers}
         >
           <View style={styles.modalContainer}>
-            <Text style={styles.title}>⏰ Update aperture time!</Text>
+            <Text style={styles.title}>⏰ Update close time!</Text>
             <View
               style={{
                 display: 'flex',
@@ -118,7 +125,7 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
                 </Text>
               </View>
               <DateTimePicker
-                value={apertureDate}
+                value={closeDate}
                 mode={'time'}
                 is24Hour={true}
                 onChange={onChange}
@@ -133,7 +140,7 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
               }}
             >
               <Text style={{ width: '82%', color: 'rgba(69, 69, 69, 1)' }}>
-                Do you want to get a notification when the valve is open?
+                Do you want to get a notification when the valve is closed?
               </Text>
               <Switch
                 ios_backgroundColor='#3e3e3e'
@@ -150,9 +157,7 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
                 marginTop: 32,
               }}
             >
-              <Text style={styles.selectedTime}>
-                The aperture time will be:{' '}
-              </Text>
+              <Text style={styles.selectedTime}>The close time will be: </Text>
               <Text
                 style={{
                   fontSize: 18,
@@ -160,12 +165,12 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
                   color: 'rgba(97, 188, 132, 1)',
                 }}
               >
-                {apertureDate.toLocaleTimeString()}
+                {closeDate.toLocaleTimeString()}
               </Text>
             </View>
             <Pressable
               onPress={() => {
-                updateApertureTime()
+                updateCloseTime()
                 setOpenModal(false)
               }}
               style={styles.update}
@@ -244,4 +249,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default ApertureTimeModal
+export default CloseTimeModal

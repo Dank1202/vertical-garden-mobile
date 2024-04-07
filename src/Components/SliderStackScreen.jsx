@@ -59,14 +59,18 @@ function SliderStackScreen() {
           >
             {currentSliderItem.date}
           </Text>
-          <Text style={{ 
-            margin: 10,
-          }}>
+          <Text
+            style={{
+              margin: 10,
+            }}
+          >
             {currentSliderItem.description}
           </Text>
-          <Text style={{ 
-            margin: 10,
-          }}>
+          <Text
+            style={{
+              margin: 10,
+            }}
+          >
             {currentSliderItem.irrigation}
           </Text>
           <CareManagement 
