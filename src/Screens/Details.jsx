@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView, RefreshControl, Modal } from 'react-native'
 import Constants from 'expo-constants'
 import useFetch from '../hooks/useFetch'
 import ValeStatus from '../Components/ValeStatus'
@@ -14,21 +14,79 @@ const Details = () => {
   const [valeStatus, setValeStatus] = useState(null)
   const [apertureModal, setApertureModal] = useState(false)
   const [closeModal, setCloseModal] = useState(false)
+
   const { apertureDate, setApertureDate } = useContext(SliderContext)
   const { closeDate, setCloseDate } = useContext(SliderContext)
 
+  const [refreshing, setRefreshing] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  const [monitoringData, setMonitoringData] = useState([])
+
   const {
     data: status,
-    loading,
-    error,
-  } = useFetch('http://192.168.0.109:3000/api/vale')
+    loading: statusLoading,
+    error: statusError,
+  } = useFetch('https://vertical-garden-api.onrender.com/api/vale')
+
+  const {
+    data: fetchedMonitoring,
+    loading: monitoringLoading,
+    error: monitoringError,
+  } = useFetch('https://vertical-garden-api.onrender.com/api/last-monitoring')
+
+  const fetchData = () => {
+    setTimeout(() => {
+      setLoading(true)
+      fetch('https://vertical-garden-api.onrender.com/api/last-monitoring')
+        .then((response) => response.json())
+        .then((newMonitoringData) => {
+          setMonitoringData(newMonitoringData)
+        })
+        .catch((error) => {
+          console.error('Error al recargar los datos de monitoreo:', error)
+        })
+
+      fetch('https://vertical-garden-api.onrender.com/api/vale')
+        .then((response) => response.json())
+        .then((newStatus) => {
+          setValeStatus(newStatus)
+          setRefreshing(false) // Indica que la recarga ha terminado
+        })
+        .catch((error) => {
+          console.error('Error al recargar los datos de status:', error)
+          setRefreshing(false) // Asegúrate de que refreshing se establezca en false incluso si hay un error
+        })
+      setRefreshing(false)
+    }, 2000)
+    setLoading(false)
+  }
 
   useEffect(() => {
-    if (!loading && !error) {
+    if (
+      !monitoringLoading &&
+      !monitoringError &&
+      !statusLoading &&
+      !statusError
+    ) {
+      setMonitoringData(fetchedMonitoring)
       setValeStatus(status)
-      console.log(valeStatus)
+      setRefreshing(false)
+      console.log('Status loading', statusLoading)
     }
-  }, [status, loading, error])
+  }, [
+    monitoringLoading,
+    monitoringError,
+    statusLoading,
+    statusError,
+    fetchedMonitoring,
+    status,
+  ])
+
+  const handleRefresh = () => {
+    setRefreshing(true) // Indica que se está realizando una actualización
+    fetchData() // Vuelve a cargar los datos
+  }
 
   return (
     <ScrollView
@@ -36,6 +94,15 @@ const Details = () => {
         marginTop: Constants.statusBarHeight + 52,
         paddingLeft: 18,
       }}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          colors={['#9Bd35A', '#689F38']}
+          tintColor={'#689F38'}
+          style={{ marginTop: 8 }}
+        />
+      }
     >
       <View>
         <Text
@@ -168,7 +235,7 @@ const Details = () => {
       {/* Show vale status component */}
       <ValeStatus valeStatus={valeStatus} loading={loading} />
 
-      <View>
+      <View style={{ paddingBottom: 52 }}>
         <Text
           style={{
             fontSize: 19,
@@ -180,8 +247,23 @@ const Details = () => {
           🏡 Last monitoring register
         </Text>
         <MonitoringRegister
-          valor='4°'
-          dato='Temperatura'
+          valor={`${monitoringData.temperature}°`}
+          dato='Temperature'
+          texto='Temperature of the air in the zone.'
+        />
+        <MonitoringRegister
+          valor={`${monitoringData.humidity}%`}
+          dato='Humitity'
+          texto='Temperature of the air in the zone.'
+        />
+        <MonitoringRegister
+          valor={`${monitoringData.floorHumidity}%`}
+          dato='Floor Humitity'
+          texto='Temperature of the air in the zone.'
+        />
+        <MonitoringRegister
+          valor={`${monitoringData.coTwo}%`}
+          dato='Co2'
           texto='Temperature of the air in the zone.'
         />
       </View>

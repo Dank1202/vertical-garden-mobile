@@ -58,24 +58,32 @@ function SliderStackScreen() {
           >
             {currentSliderItem.date}
           </Text>
-          <Text style={{ 
-            margin: 10,
-          }}>
+          <Text
+            style={{
+              margin: 10,
+            }}
+          >
             {currentSliderItem.description}
           </Text>
-          <Text style={{ 
-            margin: 10,
-          }}>
+          <Text
+            style={{
+              margin: 10,
+            }}
+          >
             {currentSliderItem.irrigation}
           </Text>
-          <Text style={{ 
-            margin: 10,
-          }}>
+          <Text
+            style={{
+              margin: 10,
+            }}
+          >
             {currentSliderItem.first_crop}
           </Text>
-          <Text style={{ 
-            margin: 10,
-          }}>
+          <Text
+            style={{
+              margin: 10,
+            }}
+          >
             {currentSliderItem.additional_care}
           </Text>
         </View>
