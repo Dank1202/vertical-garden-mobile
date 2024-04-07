@@ -71,7 +71,6 @@ const StackedAreaExample = ({ data, keys, chartName }) => {
           gap: 12,
         }}
       >
-        {console.log(data)}
         <StackedAreaChart
           style={{
             height: 98,
@@ -104,12 +103,21 @@ const StackedAreaExample = ({ data, keys, chartName }) => {
           </Text>
           <Text
             style={{
-              fontSize: 32,
+              fontSize: 28,
               fontWeight: '700',
               color: 'rgba(69, 69, 69, 1)',
             }}
           >
-            18°
+            {chartName === 'Temperature'
+              ? `${data[data.length - 1].temperature}°`
+              : null}
+            {chartName === 'Humidity'
+              ? `${data[data.length - 1].humidity}%`
+              : null}
+            {chartName === 'Floor Humidity'
+              ? `${data[data.length - 1].floorHumidity}%`
+              : null}
+            {chartName === 'Co2' ? `${data[data.length - 1].coTwo}%` : null}
           </Text>
           <Text
             style={{

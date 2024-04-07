@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView, RefreshControl } from 'react-native'
 import Constants from 'expo-constants'
 import StackedAreaExample from '../Components/StackedAreaChart'
 import ProgressCircleExample from '../Components/ProgressCircle'
 import PieChartExample from '../Components/PieChart'
 import BarChartComponent from '../Components/BarChartComponent'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 const Historical = () => {
   const [data] = useState([
@@ -14,32 +15,77 @@ const Historical = () => {
     { month: new Date(2015, 3, 1), apples: 1620 },
   ])
   const keys = ['apples']
-  const chartNames = ['Temperature', 'Floor Humidity', 'Humidity Chart', 'Co2']
+  const chartNames = ['Temperature', 'Humidity', 'Floor Humidity', 'Co2']
 
-  const [fetchedData, setFetchedData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  // States for dara from API
+  const [temperatureData, setTemperatureData] = useState(null)
+  const [humidityData, setHumidityData] = useState(null)
+  const [flootHumidityData, setFloorHumidityData] = useState(null)
+  const [coTwoData, setCoTwoData] = useState(null)
+
+  // states for refreshing
+  const [refreshing, setRefreshing] = useState(false)
+  const [refreshinLoading, setRefreshinLoading] = useState(true)
+
+  const urls = [
+    'http://192.168.0.109:3000/api/monitoring/chart/temperature',
+    'http://192.168.0.109:3000/api/monitoring/chart/humidity',
+    'http://192.168.0.109:3000/api/monitoring/chart/floor-humidity',
+    'http://192.168.0.109:3000/api/monitoring/chart/coTwo',
+  ]
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (url, setState) => {
       try {
-        const response = await fetch(
-          'http://192.168.0.109:3000/api/monitoring/chart/temperature'
-        )
+        const response = await fetch(url)
         if (!response.ok) {
           throw new Error('Network response was not ok')
         }
         const jsonData = await response.json()
-        setFetchedData(jsonData)
-        setLoading(false)
-        console.log('fetched: ', jsonData) // Acceder a jsonData en lugar de fetchedData
+        setState(jsonData)
       } catch (error) {
         setError(error)
-        setLoading(false)
       }
     }
 
-    fetchData()
+    let completedRequests = 0
+
+    const handleFetchData = () => {
+      urls.forEach(async (url, index) => {
+        try {
+          await fetchData(url, (data) => {
+            switch (index) {
+              case 0:
+                setTemperatureData(data)
+                break
+              case 1:
+                setHumidityData(data)
+                break
+              case 2:
+                setFloorHumidityData(data)
+                break
+              case 3:
+                setCoTwoData(data)
+                break
+              default:
+                break
+            }
+          })
+        } catch (error) {
+          setError(error)
+        } finally {
+          completedRequests++
+          if (completedRequests === urls.length) {
+            setLoading(false)
+          }
+        }
+      })
+    }
+
+    handleFetchData()
 
     // Clean up function
     return () => {
@@ -47,8 +93,38 @@ const Historical = () => {
     }
   }, [])
 
+  const refreshData = () => {
+    setTimeout(() => {
+      setRefreshinLoading(false)
+      setRefreshing(false)
+    }, 2000)
+    setRefreshinLoading(true)
+  }
+
+  const handleRefresh = () => {
+    setRefreshing(true) // Indica que se está realizando una actualización
+    refreshData() // Vuelve a cargar los datos
+  }
+
   if (loading) {
-    return <Text>Loading...</Text> // Muestra un mensaje de carga mientras se está recuperando los datos
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'white',
+        }}
+      >
+        <Spinner
+          visible={loading}
+          textContent={'Cargando...'}
+          textStyle={{ color: 'gray' }}
+          overlayColor='white'
+          color='#689F38'
+        />
+      </View>
+    )
   }
 
   if (error) {
@@ -61,6 +137,15 @@ const Historical = () => {
         paddingTop: Constants.statusBarHeight + 62,
         marginLeft: 18,
       }}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          colors={['#9Bd35A', '#689F38']}
+          tintColor={'#689F38'}
+          style={{ marginTop: 8 }}
+        />
+      }
     >
       <Text
         style={{
@@ -76,18 +161,30 @@ const Historical = () => {
       </View>
       <View style={{ paddingRight: 18 }}>
         <StackedAreaExample
-          data={fetchedData}
+          data={temperatureData}
           keys={['temperature']}
           chartName={chartNames[0]}
         />
         <BarChartComponent />
-        <StackedAreaExample data={data} keys={keys} chartName={chartNames[1]} />
-        <StackedAreaExample data={data} keys={keys} chartName={chartNames[2]} />
-        <StackedAreaExample data={data} keys={keys} chartName={chartNames[3]} />
+        <StackedAreaExample
+          data={humidityData}
+          keys={['humidity']}
+          chartName={chartNames[1]}
+        />
+        <StackedAreaExample
+          data={flootHumidityData}
+          keys={['floorHumidity']}
+          chartName={chartNames[2]}
+        />
+        <StackedAreaExample
+          data={coTwoData}
+          keys={['coTwo']}
+          chartName={chartNames[3]}
+        />
       </View>
       <View style={{ marginTop: 22, paddingRight: 18, marginBottom: 132 }}>
-        <Text style={{ fontSize: 20, fontWeight: '500' }}>Progress Circle</Text>
-        <ProgressCircleExample />
+        {/* <Text style={{ fontSize: 20, fontWeight: '500' }}>Progress Circle</Text> */}
+        {/* <ProgressCircleExample /> */}
       </View>
     </ScrollView>
   )
