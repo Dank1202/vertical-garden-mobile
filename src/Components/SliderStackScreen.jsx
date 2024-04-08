@@ -18,7 +18,7 @@ function SliderStackScreen() {
         marginHorizontal: 0,
       }}
     >
-      <View>
+      <View style={{}}>
         {/* <Pressable
           onPress={() => navigation.navigate('HomeStack')}
           style={{
@@ -44,6 +44,7 @@ function SliderStackScreen() {
             paddingHorizontal: 16,
             borderTopLeftRadius: 22,
             borderTopRightRadius: 22,
+            paddingBottom: 102,
           }}
         >
           <Text style={{ marginTop: 0, fontSize: 36, fontWeight: '700' }}>
@@ -73,17 +74,27 @@ function SliderStackScreen() {
           >
             {currentSliderItem.irrigation}
           </Text>
-          <CareManagement 
+          <Text
+            style={{
+              marginVertical: 12,
+              fontSize: 22,
+              fontWeight: '700',
+              color: 'rgba(106, 106, 106, 1)',
+            }}
+          >
+            🥝 Some tips
+          </Text>
+          <CareManagement
             name={'Light'}
             description={currentSliderItem.additional_care.light}
             icon={'sun'}
           />
-          <CareManagement 
+          <CareManagement
             name={'Temperature'}
             description={currentSliderItem.additional_care.temperature}
             icon={'thermometer'}
           />
-          <CareManagement 
+          <CareManagement
             name={'Other'}
             description={currentSliderItem.additional_care.other}
             icon={'menu'}
