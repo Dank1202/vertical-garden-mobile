@@ -1,9 +1,8 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import { Feather } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons'
 
-function CareManagement({name, description, icon}) {
-
+function CareManagement({ name, description, icon }) {
   return (
     <View style={styles.fastView}>
       <View>
@@ -12,11 +11,9 @@ function CareManagement({name, description, icon}) {
       </View>
 
       <View style={styles.numberContainer}>
-        <Feather name={`${icon}`} size={24} color="black" />
+        <Feather name={`${icon}`} size={24} color='black' />
       </View>
     </View>
-
-    
   )
 }
 
@@ -27,7 +24,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '96%',
+    width: '100%',
     // backgroundColor: 'rgba(0, 0, 0, 0.05)',
     borderRadius: 22,
     paddingVertical: 10,
@@ -73,4 +70,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default CareManagement;
+export default CareManagement
