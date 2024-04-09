@@ -17,11 +17,15 @@ import * as Notifications from 'expo-notifications'
 import { SliderContext } from '../Context/SiderContext'
 
 function CloseTimeModal({ openModal, setOpenModal }) {
-  const { closeDate, setCloseDate } = useContext(SliderContext)
+  // const { closeDate, setCloseDate } = useContext(SliderContext)
+  const [closeDate, setCloseDate] = useState(new Date())
   const { apertureDate, setApertureDate } = useContext(SliderContext)
 
   const [show, setShow] = useState(false)
   const [withAlert, setWithAlert] = useState(false)
+
+  // local state for time to send to the api
+  const [timeToSend, setTimeToSend] = useState({})
 
   const pan = useRef(new Animated.ValueXY()).current
 
@@ -50,11 +54,46 @@ function CloseTimeModal({ openModal, setOpenModal }) {
 
   const onChange = (e, selectedDate) => {
     setCloseDate(selectedDate)
+    setTimeToSend({
+      hour: selectedDate.getHours(),
+      minute: selectedDate.getMinutes(),
+    })
     setShow(false)
   }
 
+  // async funciton to do the request
+  const updateHour = async (url, requestOptions) => {
+    const response = await fetch(url, requestOptions)
+    if (!response.ok) {
+      throw new Error('Error al realizar la solicitud.')
+    }
+    const responseData = await response.json()
+    console.log('Update response: ', responseData)
+  }
+
   const updateCloseTime = () => {
-    console.log(closeDate)
+    console.log(closeDate.getHours())
+    console.log(closeDate.getMinutes())
+    // try to make the request
+    try {
+      console.log(timeToSend)
+      // make the request
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(timeToSend),
+      }
+      // url from the API
+      const url = 'https://vertical-garden-api.onrender.com/api/close-time'
+
+      updateHour(url, requestOptions)
+      // console.log()
+    } catch (e) {
+      console.error(e)
+      console.log('Error al actualizar la hora')
+    }
     if (withAlert) {
       scheduleRiskNotification(closeDate)
     }

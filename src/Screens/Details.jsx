@@ -22,6 +22,8 @@ const Details = () => {
   const [loading, setLoading] = useState(true)
 
   const [monitoringData, setMonitoringData] = useState([])
+  const [apertureApiTime, setApertureApiTime] = useState({})
+  const [closeApiTime, setCloseApiTime] = useState({})
 
   const {
     data: status,
@@ -34,6 +36,19 @@ const Details = () => {
     loading: monitoringLoading,
     error: monitoringError,
   } = useFetch('https://vertical-garden-api.onrender.com/api/last-monitoring')
+
+  // Aperture API time
+  const {
+    data: fetchedApertureTime,
+    loading: apertureTimeLoading,
+    error: apertureTimeError,
+  } = useFetch('https://vertical-garden-api.onrender.com/api/aperture-time')
+  // Close API time
+  const {
+    data: fetchedCloseTime,
+    loading: closeTimeLoading,
+    error: closeTimeError,
+  } = useFetch('https://vertical-garden-api.onrender.com/api/close-time')
 
   const fetchData = () => {
     setTimeout(() => {
@@ -57,6 +72,29 @@ const Details = () => {
           console.error('Error al recargar los datos de status:', error)
           setRefreshing(false) // Asegúrate de que refreshing se establezca en false incluso si hay un error
         })
+
+      // update aperture time with refresh
+      fetch('https://vertical-garden-api.onrender.com/api/aperture-time')
+        .then((response) => response.json())
+        .then((newStatus) => {
+          setApertureApiTime(newStatus)
+          setRefreshing(false) // Indica que la recarga ha terminado
+        })
+        .catch((error) => {
+          console.error('Error al recargar los datos de status:', error)
+          setRefreshing(false) // Asegúrate de que refreshing se establezca en false incluso si hay un error
+        })
+      // update close time with refresh
+      fetch('https://vertical-garden-api.onrender.com/api/close-time')
+        .then((response) => response.json())
+        .then((newStatus) => {
+          setCloseApiTime(newStatus)
+          setRefreshing(false) // Indica que la recarga ha terminado
+        })
+        .catch((error) => {
+          console.error('Error al recargar los datos de status:', error)
+          setRefreshing(false) // Asegúrate de que refreshing se establezca en false incluso si hay un error
+        })
       setRefreshing(false)
     }, 2000)
     setLoading(false)
@@ -67,9 +105,18 @@ const Details = () => {
       !monitoringLoading &&
       !monitoringError &&
       !statusLoading &&
-      !statusError
+      !statusError &&
+      !apertureTimeError &&
+      !apertureTimeLoading &&
+      !closeTimeError &&
+      !closeTimeLoading
     ) {
       setMonitoringData(fetchedMonitoring)
+      // set aperture time
+      setApertureApiTime(fetchedApertureTime)
+      // set close time
+      setCloseApiTime(fetchedCloseTime)
+
       setValeStatus(status)
       setRefreshing(false)
       console.log('Status loading', statusLoading)
@@ -81,6 +128,10 @@ const Details = () => {
     statusError,
     fetchedMonitoring,
     status,
+    apertureTimeError,
+    apertureTimeLoading,
+    closeTimeError,
+    closeTimeLoading,
   ])
 
   const handleRefresh = () => {
@@ -162,7 +213,11 @@ const Details = () => {
                 paddingLeft: 12,
               }}
             >
-              {apertureDate.toLocaleTimeString()}
+              {/* {apertureDate.toLocaleTimeString()} */}
+              {/* {console.log('Time loading', apertureApiTime)} */}
+              {apertureApiTime.hour !== undefined
+                ? `${apertureApiTime.hour}:${apertureApiTime.minute} AM`
+                : 'Loading...'}
             </Text>
           </View>
           <AntDesign name='right' size={24} color='black' />
@@ -211,7 +266,10 @@ const Details = () => {
                 paddingLeft: 12,
               }}
             >
-              {closeDate.toLocaleTimeString()}
+              {/* {closeDate.toLocaleTimeString()} */}
+              {closeApiTime.hour !== undefined
+                ? `${closeApiTime.hour}:${closeApiTime.minute} AM`
+                : 'Loading...'}
             </Text>
           </View>
           <AntDesign name='right' size={24} color='black' />

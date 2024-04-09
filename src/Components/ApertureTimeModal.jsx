@@ -21,6 +21,10 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
   const [show, setShow] = useState(false)
   const [withAlert, setWithAlert] = useState(false)
 
+  // local state for time to send to the api
+  const [timeToSend, setTimeToSend] = useState({})
+
+  // gerture config to close the modal
   const pan = useRef(new Animated.ValueXY()).current
 
   const panResponder = useRef(
@@ -48,11 +52,45 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
 
   const onChange = (e, selectedDate) => {
     setApertureDate(selectedDate)
+    setTimeToSend({
+      hour: apertureDate.getHours(),
+      minute: apertureDate.getMinutes(),
+    })
     setShow(false)
   }
 
+  // async funciton to do the request
+  const updateHour = async (url, requestOptions) => {
+    const response = await fetch(url, requestOptions)
+    if (!response.ok) {
+      throw new Error('Error al realizar la solicitud.')
+    }
+    const responseData = await response.json()
+    console.log('Update response: ', responseData)
+  }
+
   const updateApertureTime = () => {
-    console.log(apertureDate)
+    console.log(apertureDate.getHours())
+    console.log(apertureDate.getMinutes())
+    // try to make the request
+    try {
+      // make the request
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(timeToSend),
+      }
+      // url from the API
+      const url = 'https://vertical-garden-api.onrender.com/api/aperture-time'
+
+      updateHour(url, requestOptions)
+      // console.log()
+    } catch (e) {
+      console.error(e)
+      console.log('Error al actualizar la hora')
+    }
     if (withAlert) {
       scheduleRiskNotification(apertureDate)
     }
