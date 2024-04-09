@@ -31,10 +31,10 @@ const Historical = () => {
   const [refreshinLoading, setRefreshinLoading] = useState(true)
 
   const urls = [
-    'http://192.168.0.109:3000/api/monitoring/chart/temperature',
-    'http://192.168.0.109:3000/api/monitoring/chart/humidity',
-    'http://192.168.0.109:3000/api/monitoring/chart/floor-humidity',
-    'http://192.168.0.109:3000/api/monitoring/chart/coTwo',
+    'https://vertical-garden-api.onrender.com/api/monitoring/chart/temperature',
+    'https://vertical-garden-api.onrender.com/api/monitoring/chart/humidity',
+    'https://vertical-garden-api.onrender.com/api/monitoring/chart/floor-humidity',
+    'https://vertical-garden-api.onrender.com/api/monitoring/chart/coTwo',
   ]
 
   useEffect(() => {
