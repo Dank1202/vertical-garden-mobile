@@ -79,14 +79,14 @@ function CloseTimeModal({ openModal, setOpenModal }) {
       console.log(timeToSend)
       // make the request
       const requestOptions = {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(timeToSend),
       }
       // url from the API
-      const url = 'https://vertical-garden-api.onrender.com/api/close-time'
+      const url = 'https://vertical-garden-api.onrender.com/api/close-time/6616ab2fb02730a362d05325'
 
       updateHour(url, requestOptions)
       // console.log()

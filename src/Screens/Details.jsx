@@ -100,6 +100,8 @@ const Details = () => {
     setLoading(false)
   }
 
+  //https://vertical-garden-api.onrender.com/api/close-time
+
   useEffect(() => {
     if (
       !monitoringLoading &&
@@ -119,7 +121,6 @@ const Details = () => {
 
       setValeStatus(status)
       setRefreshing(false)
-      console.log('Status loading', statusLoading)
     }
   }, [
     monitoringLoading,
@@ -213,10 +214,12 @@ const Details = () => {
                 paddingLeft: 12,
               }}
             >
-              {/* {apertureDate.toLocaleTimeString()} */}
-              {/* {console.log('Time loading', apertureApiTime)} */}
               {apertureApiTime.hour !== undefined
-                ? `${apertureApiTime.hour}:${apertureApiTime.minute} AM`
+                ? `${apertureApiTime.hour}:${
+                    apertureApiTime.minute < 10
+                      ? '0' + apertureApiTime.minute
+                      : apertureApiTime.minute
+                  } ${apertureApiTime.hour >= 12 ? 'PM' : 'AM'}`
                 : 'Loading...'}
             </Text>
           </View>
@@ -266,9 +269,12 @@ const Details = () => {
                 paddingLeft: 12,
               }}
             >
-              {/* {closeDate.toLocaleTimeString()} */}
               {closeApiTime.hour !== undefined
-                ? `${closeApiTime.hour}:${closeApiTime.minute} AM`
+                ? `${closeApiTime.hour}:${
+                    closeApiTime.minute < 10
+                      ? '0' + closeApiTime.minute
+                      : closeApiTime.minute
+                  } ${closeApiTime.hour >= 12 ? 'PM' : 'AM'}`
                 : 'Loading...'}
             </Text>
           </View>

@@ -76,14 +76,15 @@ function ApertureTimeModal({ openModal, setOpenModal }) {
     try {
       // make the request
       const requestOptions = {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(timeToSend),
       }
       // url from the API
-      const url = 'https://vertical-garden-api.onrender.com/api/aperture-time'
+      const url =
+        'https://vertical-garden-api.onrender.com/api/aperture-time/6616ab38b02730a362d05327'
 
       updateHour(url, requestOptions)
       // console.log()
